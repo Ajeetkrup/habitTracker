@@ -1,0 +1,54 @@
+<div class="container">
+    <div class="wrapper">
+        <div class="title"><span>Sign In</span></div>
+        <form>
+            <div class="error"></div>
+            <div class="row">
+                <i class="fas fa-user"></i>
+                <input id="email" type="email" name="email" placeholder="Email" required />
+            </div>
+            <div class="row">
+                <i class="fas fa-lock"></i>
+                <input id="password" type="password" name="password" placeholder="Password" required />
+            </div>
+            <div class="row button">
+                <input type="submit" value="Submit" />
+            </div>
+            <div class="signup-link">
+                Not a user? <a href="/user/register">Signup now</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    /*
+    It handles the form submission for user login. It sends a POST request to the server with the user's email and password.
+    If the response status is 400 or 401, it displays an error message. Otherwise, it redirects the user to the homepage.
+    */
+    const form = document.querySelector('form');
+    const email = document.querySelector('#email');
+    const password = document.querySelector('#password');
+    const display = document.querySelector('.error');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        display.textContent = '';
+        try {
+            const res = await fetch('/user/sign-in', {
+                method: 'POST',
+                body: JSON.stringify({ email: email.value, password: password.value }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            if (res.status === 400 || res.status === 401) {
+                return display.textContent = `${data.message}. ${data.error ? data.error : ''}`;
+            }
+            if (data) {
+                location.assign("/");
+            }
+        } catch (err) {
+            console.log(err.message)
+        }
+
+    });
+</script>

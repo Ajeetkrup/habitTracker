@@ -1,0 +1,136 @@
+<p class="path">Habit Tracker / <%= title %>
+</p>
+<section>
+    <div id="err"></div>
+    <div class="week-act-tab">
+        <table>
+            <% if(activities){ %>
+                <% activities.forEach(activity=> { %>
+                    <tr>
+                        <td><span id="act-name">
+                                <%= activity.name %>
+                            </span></td>
+                    </tr>
+                    <tr>
+                        <table>
+                            <% for(let i=0;i<=6;i++) { %>
+                                <% if(activity.statusData[i]) { %>
+                                    <% let currdt=new Date(new Date().setDate(new Date().getDate()-i)), prevDt=new
+                                        Date(activity.statusData[i].statusDt) %>
+                                        <% if(currdt.getDate()==prevDt.getDate() && currdt.getMonth()==prevDt.getMonth()
+                                            && currdt.getFullYear()==prevDt.getFullYear()) { %>
+                                            <td>
+                                                <div>
+                                                    <%= `${String(new
+                                                        Date(activity.statusData[i].statusDt).getDate()).padStart(2, '0'
+                                                        )}-${String(new Date(activity.statusData[i].statusDt).getMonth()
+                                                        + 1).padStart(2, '0' )}-${new
+                                                        Date(activity.statusData[i].statusDt).getFullYear()}` %>
+                                                </div>
+                                                <div>
+                                                    <select name="status" id="status"
+                                                        onchange="handleChangeStatusByDate('<%= activity.id %>','<%= activity.statusData[i] && activity.statusData[i].id %>', this.value, '<%= i %>')">
+                                                        <option value="" selected <%=activity.statusData[i] &&
+                                                            activity.statusData[i].status==="" ? "selected" : '' %>
+                                                            >Select
+                                                        </option>
+                                                        <option value="done" <%=activity.statusData[i] &&
+                                                            activity.statusData[i].status==="done" ? "selected" : '' %>
+                                                            >Done
+                                                        </option>
+                                                        <option value="not done" <%=activity.statusData[i] &&
+                                                            activity.statusData[i].status==="not done" ? "selected" : ''
+                                                            %>
+                                                            >Not
+                                                            Done</option>
+                                                        <option value="none" <%=activity.statusData[i] &&
+                                                            activity.statusData[i].status==="none" ? "selected" : '' %>
+                                                            >None
+                                                        </option>
+                                                    </select>
+                                            </td>
+                                            <% } else { %>
+                                                <td>
+                                                    <div>
+                                                        <% let tempDt=new Date(new Date().setDate(new
+                                                            Date().getDate()-i)) %>
+                                                            <%= `${String(new Date(tempDt).getDate()).padStart(2, '0'
+                                                                )}-${String(new Date(tempDt).getMonth() +
+                                                                1).padStart(2, '0' )}-${new Date(tempDt).getFullYear()}`
+                                                                %>
+                                                    </div>
+                                                    <div>
+                                                        <select name="status" id="status"
+                                                            onchange="handleChangeStatusByDate('<%= activity.id %>',undefined, this.value, '<%= i %>')">
+                                                            <option value="" selected>Select</option>
+                                                            <option value="done">Done</option>
+                                                            <option value="not done">Not Done</option>
+                                                            <option value="none">None</option>
+                                                        </select>
+                                                </td>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <td>
+                                                            <div>
+                                                                <% let tempDt=new Date(new Date().setDate(new
+                                                                    Date().getDate()-i)) %>
+                                                                    <%= `${String(new
+                                                                        Date(tempDt).getDate()).padStart(2, '0'
+                                                                        )}-${String(new Date(tempDt).getMonth() +
+                                                                        1).padStart(2, '0' )}-${new
+                                                                        Date(tempDt).getFullYear()}` %>
+                                                            </div>
+                                                            <div>
+                                                                <select name="status" id="status"
+                                                                    onchange="handleChangeStatusByDate('<%= activity.id %>',undefined, this.value, '<%= i %>')">
+                                                                    <option value="" selected>Select</option>
+                                                                    <option value="done">Done</option>
+                                                                    <option value="not done">Not Done</option>
+                                                                    <option value="none">None</option>
+                                                                </select>
+                                                        </td>
+                                                        <% } %>
+                                                            <% } %>
+
+                        </table>
+                    </tr>
+
+                    <% }) %>
+                        </tr>
+                        <% } else { %>
+                            <span>No Acitvity to Show</span>
+                            <div>Create a <a href="/activity">activity first</a></div>
+                            <% } %>
+        </table>
+    </div>
+</section>
+
+
+<script>
+    /*
+    function for updating status by id 
+    if their is not status for that day, new status will be created
+    otherwise it shows the status of that day
+    */
+    const error = document.querySelector("#err");
+    error.textContent = "";
+    async function handleChangeStatusByDate(actid, stId, status, day) {
+        console.log({ actid, stId, status, day });
+        try {
+            const res = await fetch('/activity/statusUpdateById', {
+                method: 'POST',
+                body: JSON.stringify({ activityid: actid, stDtId: stId, status: status, day: day }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            if (res.status === 400 || res.status === 401) {
+                return error.textContent = `${data.message}. ${data.error ? data.error : ''}`;
+            }
+            if (data) {
+                location.reload();
+            }
+        } catch (err) {
+            console.log(err.message)
+        }
+    }
+</script>
