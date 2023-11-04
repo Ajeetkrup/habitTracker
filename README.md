@@ -2,6 +2,8 @@
 
 This is a fullstack web application built with the Node.js runtime environment, Express.js framework, and MongoDB as the database. The application follows the Model-View-Controller (MVC) architecture pattern. 
 
+Check out this application - https://habit-tracker-e5an.onrender.com
+
 ## Prerequisites
 Before running the application, ensure that you have the following installed on your system:
 - Node.js: [Download and Install Node.js](https://nodejs.org)
