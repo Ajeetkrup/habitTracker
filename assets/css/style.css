@@ -152,6 +152,10 @@ form .act-button input:hover {
   padding-left: 1rem;
 }
 
+.week-act-tab {
+  overflow: auto;
+}
+
 .week-act-tab table tbody tr td {
   padding: 8px 3rem;
 }
