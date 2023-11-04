@@ -32,7 +32,7 @@ The project follows a typical MVC structure:
 -  `models/` : Defines the data models and interacts with the MongoDB database.
 -  `views/` : Contains the views/templates to render HTML pages.
 -  `routes/` : Defines the application routes and maps them to the corresponding controller methods.
--  `public/` : Static assets such as CSS, JavaScript, and images.
+-  `assets/` : Static assets such as CSS, JavaScript, and images.
 -  `app.js` : Entry point of the application where the server is configured and routes are registered.
 
 That's it! You now have a fullstack web application built with Node.js, Express, and MongoDB. Enjoy building awesome web applications!
